@@ -2,10 +2,22 @@
 
 import { useState } from "react";
 import { loginWithPi } from "@/lib/pi";
+import { createPiPayment } from "@/lib/payment";
 
 export default function Home() {
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(false);
+
+  const handlePiPayment = async () => {
+    const payment = await createPiPayment(
+      1,
+      "AI Basic Verification Service"
+    );
+
+    if (payment) {
+      alert("Pi Payment started successfully!");
+    }
+  };
 
   const handlePiLogin = async () => {
     setLoading(true);
@@ -117,9 +129,12 @@ export default function Home() {
               Start AI Verification
             </button>
 
-            <button className="bg-purple-600 px-6 py-3 rounded-xl font-bold">
-              Pay with Pi
-            </button>
+            <button
+                   onClick={handlePiPayment}
+                     className="bg-purple-600 px-6 py-3 rounded-xl font-bold"
+>
+                           Pay with Pi
+             </button>
 
           </div>
 
