@@ -1,85 +1,125 @@
 "use client";
 
-import { useEffect } from "react";
-import { initializePi, loginWithPi } from "../lib/pi";
-export default function Home() {
+import { useState } from "react";
+import { loginWithPi } from "@/lib/pi";
 
-  useEffect(() => {
-    initializePi();
-  }, []);
+export default function Home() {
+  const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
 
   const handlePiLogin = async () => {
-    const user = await loginWithPi();
+    setLoading(true);
 
-    if (user) {
-      alert(`Welcome ${user.user.username}`);
-      console.log(user);
+    const data = await loginWithPi();
+
+    if (data) {
+      setUser(data);
     }
+
+    setLoading(false);
   };
+
   return (
-    <main className="min-h-screen bg-black text-white">
+    <main className="min-h-screen bg-black text-white p-6">
+      
       {/* Header */}
-      <header className="flex justify-between items-center p-6">
+      <header className="flex justify-between items-center">
         <h1 className="text-3xl font-bold text-purple-500">
           Asasanta Pi Trust
         </h1>
 
-        <button
-           onClick={handlePiLogin}
-                className="bg-purple-600 hover:bg-purple-700 px-6 py-3 rounded-xl font-semibold"
->
-                 Login with Pi
-        </button>
+        {!user ? (
+          <button
+            onClick={handlePiLogin}
+            className="bg-purple-600 px-6 py-3 rounded-xl font-bold"
+          >
+            {loading ? "Connecting..." : "Login with Pi"}
+          </button>
+        ) : (
+          <div className="text-green-400">
+            🟢 Connected
+          </div>
+        )}
       </header>
 
-      {/* Hero Section */}
-      <section className="text-center mt-20 px-6">
-        <h2 className="text-5xl font-bold">
+
+      {/* Hero */}
+      <section className="text-center mt-24">
+        <h2 className="text-6xl font-bold">
           AI-Powered Digital Trust
           <span className="text-purple-500"> on Pi Network</span>
         </h2>
 
-        <p className="mt-6 text-xl text-gray-400 max-w-3xl mx-auto">
+        <p className="text-gray-400 mt-6 text-xl">
           Secure identity verification, AI trust scoring,
-          and seamless Pi cryptocurrency payments.
+          and Pi-powered digital services.
         </p>
-
-        <button className="mt-10 bg-cyan-500 hover:bg-cyan-600 px-8 py-4 rounded-2xl text-black font-bold">
-          Get Started
-        </button>
       </section>
 
-      {/* Features */}
-      <section className="grid md:grid-cols-3 gap-6 mt-20 p-8">
 
-        <div className="bg-gray-900 p-6 rounded-2xl">
-          <h3 className="text-2xl font-bold">
-            🧠 AI Trust Score
-          </h3>
-          <p className="mt-4 text-gray-400">
-            Analyze user identity and generate intelligent trust ratings.
-          </p>
-        </div>
+      {/* Dashboard */}
+      {user && (
+        <section className="mt-16 bg-gray-900 rounded-2xl p-8">
 
-        <div className="bg-gray-900 p-6 rounded-2xl">
-          <h3 className="text-2xl font-bold">
-            🟣 Pi Login
-          </h3>
-          <p className="mt-4 text-gray-400">
-            Authenticate securely using Pi Network identity.
-          </p>
-        </div>
+          <h2 className="text-3xl font-bold mb-6">
+            🟣 Welcome {user.username}
+          </h2>
 
-        <div className="bg-gray-900 p-6 rounded-2xl">
-          <h3 className="text-2xl font-bold">
-            💳 Pi Payments
-          </h3>
-          <p className="mt-4 text-gray-400">
-            Pay for AI-powered verification and digital services with Pi.
-          </p>
-        </div>
+          <div className="grid md:grid-cols-2 gap-6">
 
-      </section>
+            <div className="bg-black p-5 rounded-xl">
+              <h3 className="text-gray-400">
+                Pi Username
+              </h3>
+              <p className="text-2xl font-bold">
+                {user.username}
+              </p>
+            </div>
+
+            <div className="bg-black p-5 rounded-xl">
+              <h3 className="text-gray-400">
+                User ID
+              </h3>
+              <p className="text-sm break-all">
+                {user.uid}
+              </p>
+            </div>
+
+            <div className="bg-black p-5 rounded-xl">
+              <h3 className="text-gray-400">
+                AI Trust Score
+              </h3>
+              <p className="text-5xl font-bold text-green-400">
+                98%
+              </p>
+            </div>
+
+            <div className="bg-black p-5 rounded-xl">
+              <h3 className="text-gray-400">
+                Verification Status
+              </h3>
+              <p className="text-green-400 font-bold">
+                VERIFIED
+              </p>
+            </div>
+
+          </div>
+
+
+          <div className="mt-8 flex gap-4">
+            
+            <button className="bg-cyan-500 text-black font-bold px-6 py-3 rounded-xl">
+              Start AI Verification
+            </button>
+
+            <button className="bg-purple-600 px-6 py-3 rounded-xl font-bold">
+              Pay with Pi
+            </button>
+
+          </div>
+
+        </section>
+      )}
     </main>
   );
 }
