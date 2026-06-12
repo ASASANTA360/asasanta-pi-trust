@@ -25,26 +25,43 @@ export const createPiPayment = async (
     const payment = await window.Pi.createPayment(
       paymentData,
       {
-        onReadyForServerApproval: function (
+        onReadyForServerApproval: async function (
           paymentId: string
         ) {
           console.log(
             "Payment ready for server approval:",
             paymentId
           );
-        },
 
-        onReadyForServerCompletion: function (
-          paymentId: string,
-          txid: string
-        ) {
-          console.log(
-            "Payment completed:",
-            paymentId,
-            txid
-          );
-        },
+          try {
+            console.log(
+              "Approving payment:",
+              paymentId
+            );
 
+            const response = await fetch(
+              "/api/payments/approve",
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  paymentId,
+                }),
+              }
+            );
+
+            const result = await response.json();
+
+            console.log(
+              "Approval response:",
+              result
+            );
+          } catch (err) {
+            console.error("Approval request failed:", err);
+          }
+        },
         onCancel: function (
           paymentId: string
         ) {
