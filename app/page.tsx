@@ -10,13 +10,18 @@ export default function Home() {
   const handlePiLogin = async () => {
     setLoading(true);
 
-    const data = await loginWithPi();
+    try {
+      const data = await loginWithPi();
+      console.log("Pi Login Result:", data);
 
-    if (data) {
-      setUser(data);
+      if (data) {
+        setUser(data);
+      }
+    } catch (err) {
+      console.error("Login Error:", err);
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   return (

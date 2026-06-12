@@ -4,25 +4,15 @@ declare global {
   }
 }
 
-export const initializePi = () => {
-  if (typeof window === "undefined") return false;
-
-  if (!window.Pi) {
-    console.log("Pi Browser SDK not available");
-    return false;
-  }
-
-  window.Pi.init({
-    version: "2.0",
-    sandbox: true,
-  });
-
-  console.log("Pi SDK initialized successfully");
-  return true;
-};
-
 export const loginWithPi = async () => {
   try {
+    // Check Pi SDK availability first
+    const initialized = !!window.Pi;
+
+    if (!initialized) {
+      throw new Error("Pi SDK not available");
+    }
+
     const scopes = ["username", "payments"];
 
     const auth = await window.Pi.authenticate(
@@ -39,6 +29,7 @@ export const loginWithPi = async () => {
       uid: auth.user.uid,
       accessToken: auth.accessToken,
     };
+
   } catch (error) {
     console.error("Pi login failed:", error);
     return null;
