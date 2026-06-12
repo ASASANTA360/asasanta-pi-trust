@@ -8,31 +8,28 @@ export default function Home() {
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(false);
 
-  const handlePiPayment = async () => {
-    const payment = await createPiPayment(
-      1,
-      "AI Basic Verification Service"
-    );
-
-    if (payment) {
-      alert("Pi Payment started successfully!");
+  const handlePiLogin = async () => {
+    try {
+      setLoading(true);
+      const u = await loginWithPi();
+      setUser(u || null);
+    } catch (e) {
+      console.error("Login failed", e);
+      setUser(null);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handlePiLogin = async () => {
-    setLoading(true);
+  const handlePiPayment = async () => {
+    alert("Pay button clicked");
 
-    try {
-      const data = await loginWithPi();
-      console.log("Pi Login Result:", data);
+    const payment = await createPiPayment(1, "AI Basic Verification Service");
 
-      if (data) {
-        setUser(data);
-      }
-    } catch (err) {
-      console.error("Login Error:", err);
-    } finally {
-      setLoading(false);
+    console.log("Payment result:", payment);
+
+    if (payment) {
+      alert("Pi Payment started successfully!");
     }
   };
 
